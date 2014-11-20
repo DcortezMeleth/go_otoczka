@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 import pickle
-import algo
 
+import algo
 from generator import Generator
 
 
@@ -12,6 +12,22 @@ class Solver(object):
     POINTS_FILE_NAME = "points.dat"
     RESULT_FILE_NAME = "result.dat"
 
+    help_str = "Program usage: sage:\n  " \
+               "save_points - save to file\n  " \
+               "load_points - load from file\n  " \
+               "save_result - save to file\n  " \
+               "set_n <n> <square_n=25> <diagonal_n=20> - set number of points to generate\n  " \
+               "set_range <min> <max> - set params for range generation\n  " \
+               "set_circle <center.x> <center.y> <r> - set params for circle generation\n  " \
+               "set_quadrilateral <x1.x> <x1.y> <x2.x> <x2.y> <x3.x> <x3.y> <x4.x> <x4.y> " \
+               "- set params for quadrilateral generation\n  " \
+               "set_square <x1.x> <x1.y> <x3.x> <x3.y> - set params for square generation\n  " \
+               "generate <option> - generate points (0 - range, 1 - circle, 2 - quadrilateral, 3 - square)\n  " \
+               "solve <algorithm> - solve problem using chosen algorithm(0 - Graham, 1 - Jarvis)\n  " \
+               "print_points - print generated points\n  " \
+               "print_result - prints points in result list\n  " \
+               "print_help - print program usage"
+
     def __init__(self):
         self._generator = Generator()
         self._algorithms = {}
@@ -19,20 +35,8 @@ class Solver(object):
         self._result = []
 
     def run(self):
-        print "Remember to create or get account at the beginning. Usage:\n " \
-              "save_points - save to file\n " \
-              "load_points - load from file\n " \
-              "save_result - save to file\n " \
-              "set_n <n> <square_n=25> <diagonal_n=20> - set number of points to generate\n " \
-              "set_range <min> <max> - set params for range generation\n " \
-              "set_circle <center.x> <center.y> <r> - set params for circle generation\n " \
-              "set_quadrilateral <x1.x> <x1.y> <x2.x> <x2.y> <x3.x> <x3.y> <x4.x> <x4.y> " \
-              "- set params for quadrilateral generation\n  " \
-              "set_square <x1.x> <x1.y> <x3.x> <x3.y> - set params for square generation\n" \
-              "generate <option> - generate points (0 - range, 1 - circle, 2 - quadrilateral, 3 - square)\n" \
-              "solve <algorithm> - solve problem using chosen algorithm(0 - Graham, 1 - Jarvis)\n" \
-              "print_points - print generated points\n" \
-              "print_result - prints points in result list"
+        print self.help_str
+
         while True:
             try:
                 read_text = raw_input()
@@ -51,26 +55,29 @@ class Solver(object):
         except Exception as e:
             print 'Error: occurred', e
 
+    def print_help(self):
+        print self.help_str
+
     def print_result(self):
         print self._result
 
     def print_points(self):
-        print  self._points
+        print self._points
 
-    def solve(self, algorithm):
+    def solve(self, algorithm_no):
         if not self._algorithms:
             print 'You have to generate points first!'
-        self._algorithms[algorithm].solve()
-        self._result = self._algorithms[algorithm].get_result()
+        algorithm = self._algorithms[int(algorithm_no)]
+        algorithm.solve()
+        self._result = algorithm.get_result()
 
     def generate(self, option):
-        self._generator.choose_option(option)
         options = {0: self._generator.generate_range,
                    1: self._generator.generate_circle,
                    2: self._generator.generate_quadrilateral,
                    3: self._generator.generate_square}
         try:
-            options[option]()
+            options[int(option)]()
             self._points = self._generator.get_points()
 
             self._algorithms = {0: algo.Graham(self._points),
@@ -79,19 +86,20 @@ class Solver(object):
             print 'Option should be in range 0-3'
 
     def set_square(self, x1_x, x1_y, x3_x, x3_y):
-        self._generator.set_square(Point(x1_x, x1_y), Point(x3_x, x3_y))
+        self._generator.set_square(Point(float(x1_x), float(x1_y)), Point(float(x3_x), float(x3_y)))
 
     def set_quadrilateral(self, x1_x, x1_y, x2_x, x2_y, x3_x, x3_y, x4_x, x4_y):
-        self._generator.set_quadrilateral(Point(x1_x, x1_y), Point(x2_x, x2_y), Point(x3_x, x3_y), Point(x4_x, x4_y))
+        self._generator.set_quadrilateral(Point(float(x1_x), float(x1_y)), Point(float(x2_x), float(x2_y)),
+                                          Point(float(x3_x), float(x3_y)), Point(float(x4_x), float(x4_y)))
 
     def set_circle(self, x, y, r):
-        self._generator.set_circle(Point(x, y), r)
+        self._generator.set_circle(Point(float(x), float(y)), float(r))
 
     def set_range(self, range_min, range_max):
-        self._generator.set_range(range_min, range_max)
+        self._generator.set_range(float(range_min), float(range_max))
 
     def set_n(self, n, square_n=25, diagonal_n=20):
-        self._generator.set_n(n, square_n=square_n, diagonal_n=diagonal_n)
+        self._generator.set_n(n, square_n=int(square_n), diagonal_n=int(diagonal_n))
 
     def save_points(self):
         pickle.dump(self._points, self.POINTS_FILE_NAME)
