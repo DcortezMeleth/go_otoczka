@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 import math
+import traceback
 
 __author__ = 'Bartosz'
 
@@ -73,9 +74,9 @@ class Graham(object):
         self._result = result[:3]
 
         # krok czwarty - szukanie rozwiązania
-        i = 0
+        i = 3
         while i < len(result):
-            if is_left(self._result[-2], self._result[-1], self._result[i]):
+            if is_left(self._result[-2], self._result[-1], result[i]):
                 self._result.append(result[i])
                 i += 1
             else:
