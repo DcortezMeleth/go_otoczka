@@ -1,7 +1,8 @@
 # -*- coding: UTF-8 -*-
 import pickle
+import traceback
 
-import algo
+from algorithms import Graham, Jarvis
 from generator import Generator
 
 
@@ -36,7 +37,6 @@ class Solver(object):
 
     def run(self):
         print self.help_str
-
         while True:
             try:
                 read_text = raw_input()
@@ -51,6 +51,7 @@ class Solver(object):
             handler = getattr(self, tokens[0])
             handler(*tokens[1:])
         except AttributeError:
+            traceback.print_exc()
             print 'Wrong command name:', tokens[0]
         except Exception as e:
             print 'Error: occurred', e
@@ -80,8 +81,8 @@ class Solver(object):
             options[int(option)]()
             self._points = self._generator.get_points()
 
-            self._algorithms = {0: algo.Graham(self._points),
-                                1: algo.Jarvis(self._points)}
+            self._algorithms[0] = Graham(self._points)
+            self._algorithms[1] = Jarvis(self._points)
         except KeyError:
             print 'Option should be in range 0-3'
 
@@ -102,10 +103,16 @@ class Solver(object):
         self._generator.set_n(n, square_n=int(square_n), diagonal_n=int(diagonal_n))
 
     def save_points(self):
-        pickle.dump(self._points, self.POINTS_FILE_NAME)
+        pickle.dump(self._points, open(self.POINTS_FILE_NAME, 'wb'))
 
     def save_result(self):
-        pickle.dump(self._result, self.RESULT_FILE_NAME)
+        pickle.dump(self._result, open(self.RESULT_FILE_NAME, 'wb'))
 
     def load_points(self):
-        self._generator.set_points(pickle.load(self.POINTS_FILE_NAME))
+        self._generator.set_points(pickle.load(open(self.POINTS_FILE_NAME, 'rb')))
+
+
+if __name__ == '__main__':
+    app = Solver()
+    app.run()
+    sys.exit(0)

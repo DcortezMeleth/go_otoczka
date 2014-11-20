@@ -60,6 +60,7 @@ class Generator(object):
             x = (self._max - self._min) * random.random() + self._min
             y = (self._max - self._min) * random.random() + self._min
             result.append(Point(x, y))
+        self._generated = result
         return result
 
     # generowanie punktów leżących na okręgu
@@ -70,6 +71,7 @@ class Generator(object):
             x = self._center.x + self._r * math.cos(t)
             y = self._center.y + self._r * math.sin(t)
             result.append(Point(x, y))
+        self._generated = result
         return result
 
     # generowanie punktów leżących na bokach czworokąta
@@ -93,6 +95,7 @@ class Generator(object):
             else:
                 y = line.delta_y * random.random() + line.get_lower_y()
             result.append(Point(x, y))
+        self._generated = result
         return result
 
     def generate_square(self):
@@ -105,4 +108,5 @@ class Generator(object):
             result.append(Point(x, y))
         # kwadrat jest czworokątem, więc punkty na nim generujemy z napisanej już metody
         result.extend(self.generate_quadrilateral(n=self._square_n, quadra=self._square))
+        self._generated = result
         return result
