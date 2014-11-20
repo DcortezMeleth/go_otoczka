@@ -21,9 +21,9 @@ class Generator(object):
         self._center = Point(0, 0)
         self._r = 10
         # 4 wierzchołki czworokąta
-        self._quadra = [Point(-10, 10), Point(-10, -10), Point(10, 10), Point(10, -10)]
+        self._quadra = [Point(-10, 10), Point(-10, -10), Point(10, -10), Point(10, 10)]
         # 2 wierzchołki jednoznacznie wyznaczające kwadrat
-        self._square = [Point(0, 0), Point(0, 10), Point(10, 0), Point(10, 10)]
+        self._square = [Point(0, 0), Point(0, 10), Point(10, 10), Point(10, 0)]
         # cache ostatnio wygenerowanych punktów
         self._generated = []
 
@@ -76,8 +76,10 @@ class Generator(object):
 
     # generowanie punktów leżących na bokach czworokąta
     def generate_quadrilateral(self, n=None, quadra=None):
-        n = n if n is not None else self._n
-        quadra = quadra if quadra is not None else self._quadra
+        if not n:
+            n = self._n
+        if not quadra:
+            quadra = self._quadra
         result = []
         for i in xrange(0, n):
             # losujemy 2 punkty leżące na jednym boku
@@ -86,14 +88,14 @@ class Generator(object):
             x2 = quadra[idx + 1] if idx != 3 else quadra[0]
 
             line = Line.get_line(x1, x2)
-            x = line.delta_x * random.random() + line.get_lower_x()
+            x = line.delta_x() * random.random() + line.get_lower_x()
 
             # jeśli jest to normalna funkcja liczymy y z wzoru f(x) = ax + b
             if line.is_ok():
                 y = line.get_y(x)
             # w przeciwnym wypadku losujemy położenie y pomiędzy dwoma punktami
             else:
-                y = line.delta_y * random.random() + line.get_lower_y()
+                y = line.delta_y() * random.random() + line.get_lower_y()
             result.append(Point(x, y))
         self._generated = result
         return result
@@ -102,8 +104,8 @@ class Generator(object):
         result = []
         for i in xrange(0, self._diagonal_n):
             idx = random.randint(0, 1)
-            line = Line.get_line(self._quadra[idx], self._quadra[idx + 1])
-            x = line.delta_x * random.random() + line.get_lower_x()
+            line = Line.get_line(self._quadra[idx], self._quadra[idx + 2])
+            x = line.delta_x() * random.random() + line.get_lower_x()
             y = line.get_y(x)
             result.append(Point(x, y))
         # kwadrat jest czworokątem, więc punkty na nim generujemy z napisanej już metody

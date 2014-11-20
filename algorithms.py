@@ -70,6 +70,8 @@ class Graham(object):
             if get_degree(self._p0, point) != get_degree(self._p0, result[-1]):
                 result.append(point)
 
+        print len(result)
+
         # krok trzeci - definiujemy stos
         self._result = result[:3]
 
@@ -99,6 +101,7 @@ class Jarvis(object):
 
         # prawa strona otoczki
         tmp = self._p0
+        self._result.append(self._p0)
         while tmp != self._p1:
             sorted_points = sorted(self._points, key=lambda x: (get_degree(tmp, x), -get_distance(tmp, x)))
             # pierwszym elementem zawsze będzie nasz obecny punkt, bo mamy wtedy kąt 0 stopni
@@ -106,6 +109,7 @@ class Jarvis(object):
             tmp = self._result[-1]
 
         # lewa strona otoczki
+        tmp = self._p0
         while tmp != self._p1:
             sorted_points = sorted(self._points, key=lambda x: (get_degree_reverse(tmp, x), -get_distance(tmp, x)))
             self._result.append(sorted_points[1])

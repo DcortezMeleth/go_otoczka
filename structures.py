@@ -9,8 +9,11 @@ class Point(object):
         self.x = x
         self.y = y
 
+    def __str__(self):
+        return '({0}, {1})'.format(self.x, self.y)
 
-# klasa reprezentująca
+
+# klasa reprezentująca prosta
 class Line(object):
     def __init__(self, a, b, c=1, x1=None, x2=None):
         self.a = a
@@ -18,6 +21,9 @@ class Line(object):
         self.c = c
         self.x1 = x1
         self.x2 = x2
+
+    def __str__(self):
+        return "[{0}, {1}]".format(str(self.a), str(self.b))
 
     def delta_x(self):
         return abs(self.x1.x - self.x2.x)
