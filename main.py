@@ -59,7 +59,7 @@ class Solver(object):
             print 'Error: occurred', e
 
     def draw_points(self):
-        win = graphics.GraphWin("go_otoczka", 640, 400)
+        win = graphics.GraphWin("go_otoczka", 800, 600)
         for point in self._points:
             point.draw(win)
         win.getMouse()

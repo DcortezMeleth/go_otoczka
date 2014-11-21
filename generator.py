@@ -45,7 +45,7 @@ class Generator(object):
 
     # x1 i x2 to dwa przeciwległe wierzchołki kwadratu
     def set_square(self, x1, x3):
-        self._quadra = [x1, Point(x1.x, x3.y), x3, Point(x3.x, x1.y)]
+        self._square = [x1, Point(x1.x, x3.y), x3, Point(x3.x, x1.y)]
 
     def get_points(self):
         return self._generated
@@ -104,7 +104,7 @@ class Generator(object):
         result = []
         for i in xrange(0, self._diagonal_n):
             idx = random.randint(0, 1)
-            line = Line.get_line(self._quadra[idx], self._quadra[idx + 2])
+            line = Line.get_line(self._square[idx], self._square[idx + 2])
             x = line.delta_x() * random.random() + line.get_lower_x()
             y = line.get_y(x)
             result.append(Point(x, y))
