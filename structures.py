@@ -1,14 +1,11 @@
 # -*- coding: UTF-8 -*-
 __author__ = 'Bartosz'
 import numpy.linalg as la
+import graphics
 
 
 # klasa reprezentująca punkt w przestrzeni
-class Point(object):
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
+class Point(graphics.Point):
     def __str__(self):
         return '({0}, {1})'.format(self.x, self.y)
 

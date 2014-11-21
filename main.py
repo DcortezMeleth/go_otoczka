@@ -1,7 +1,9 @@
 # -*- coding: UTF-8 -*-
 import pickle
 import traceback
+import graphics
 
+from structures import Point
 from algorithms import Graham, Jarvis
 from generator import Generator
 
@@ -56,6 +58,13 @@ class Solver(object):
         except Exception as e:
             print 'Error: occurred', e
 
+    def draw_points(self):
+        win = graphics.GraphWin("go_otoczka", 640, 400)
+        for point in self._points:
+            point.draw(win)
+        win.getMouse()
+        win.close()
+
     def print_help(self):
         print self.help_str
 
@@ -63,7 +72,8 @@ class Solver(object):
         print self._result
 
     def print_points(self):
-        print self._points
+        for point in self._points:
+            print point
 
     def solve(self, algorithm_no):
         if not self._algorithms:
@@ -100,7 +110,7 @@ class Solver(object):
         self._generator.set_range(float(range_min), float(range_max))
 
     def set_n(self, n, square_n=25, diagonal_n=20):
-        self._generator.set_n(n, square_n=int(square_n), diagonal_n=int(diagonal_n))
+        self._generator.set_n(int(n), square_n=int(square_n), diagonal_n=int(diagonal_n))
 
     def save_points(self):
         pickle.dump(self._points, open(self.POINTS_FILE_NAME, 'wb'))
