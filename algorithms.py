@@ -70,8 +70,6 @@ class Graham(object):
             if get_degree(self._p0, point) != get_degree(self._p0, result[-1]):
                 result.append(point)
 
-        print len(result)
-
         # krok trzeci - definiujemy stos
         self._result = result[:3]
 

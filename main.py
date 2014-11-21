@@ -1,8 +1,8 @@
 # -*- coding: UTF-8 -*-
 import pickle
 import traceback
-import graphics
 
+import graphics
 from structures import Point
 from algorithms import Graham, Jarvis
 from generator import Generator
@@ -27,6 +27,8 @@ class Solver(object):
                "set_square <x1.x> <x1.y> <x3.x> <x3.y> - set params for square generation\n  " \
                "generate <option> - generate points (0 - range, 1 - circle, 2 - quadrilateral, 3 - square)\n  " \
                "solve <algorithm> - solve problem using chosen algorithm(0 - Graham, 1 - Jarvis)\n  " \
+               "draw_points - draw generated points set\n  " \
+               "draw_result - draws result sequentially, drawing stretches one by one\n  " \
                "print_points - print generated points\n  " \
                "print_result - prints points in result list\n  " \
                "print_help - print program usage"
@@ -57,6 +59,19 @@ class Solver(object):
             print 'Wrong command name:', tokens[0]
         except Exception as e:
             print 'Error: occurred', e
+
+    def draw_result(self):
+        win = graphics.GraphWin("go_otoczka", 800, 600)
+        for point in self._points:
+            point.draw(win)
+        for i in xrange(0, len(self._result)-1):
+            line = graphics.Line(self._result[i], self._result[i + 1])
+            line.draw(win)
+            win.getMouse()
+        line = graphics.Line(self._result[0], self._result[-1])
+        line.draw(win)
+        win.getMouse()
+        win.close()
 
     def draw_points(self):
         win = graphics.GraphWin("go_otoczka", 800, 600)
