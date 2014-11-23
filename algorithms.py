@@ -51,6 +51,26 @@ def is_left(x, y, z):
     return alpha < beta < alpha + 180
 
 
+def comparator(tmp, x1, x2):
+    if x1 == tmp:
+        return x2
+    if x2 == tmp:
+        return x1
+    if get_degree(tmp, x1) == get_degree(tmp, x2):
+        return x1 if get_distance(tmp, x1) > get_distance(tmp, x2) else x2
+    return x1 if get_degree(tmp, x1) < get_degree(tmp, x2) else x2
+
+
+def reverse_comparator(tmp, x1, x2):
+    if x1 == tmp:
+        return x2
+    if x2 == tmp:
+        return x1
+    if get_degree_reverse(tmp, x1) == get_degree_reverse(tmp, x2):
+        return x1 if get_distance(tmp, x1) > get_distance(tmp, x2) else x2
+    return x1 if get_degree_reverse(tmp, x1) < get_degree_reverse(tmp, x2) else x2
+
+
 class Graham(object):
     def __init__(self, points):
         self._points = points
@@ -101,20 +121,25 @@ class Jarvis(object):
         tmp = self._p0
         self._result.append(self._p0)
         while tmp != self._p1:
-            sorted_points = sorted(self._points, key=lambda x: (get_degree(tmp, x), -get_distance(tmp, x)))
+            f = lambda x, y: comparator(tmp, x, y)
+            best = reduce(f, self._points)
             # pierwszym elementem zawsze będzie nasz obecny punkt, bo mamy wtedy kąt 0 stopni
-            self._result.append(sorted_points[1])
+            self._result.append(best)
             tmp = self._result[-1]
 
         # lewa strona otoczki
         tmp = self._p0
+        result = []
         while tmp != self._p1:
-            sorted_points = sorted(self._points, key=lambda x: (get_degree_reverse(tmp, x), -get_distance(tmp, x)))
-            self._result.append(sorted_points[1])
-            tmp = self._result[-1]
+            f = lambda x, y: reverse_comparator(tmp, x, y)
+            best = reduce(f, self._points)
+            result.append(best)
+            tmp = result[-1]
 
         # usuwamy p1, bo zostało dodane 2 razy
-        self._result = self._result[:-1]
+        result = result[:-1]
+
+        self._result.extend(result[::-1])
 
     def get_result(self):
         return self._result
