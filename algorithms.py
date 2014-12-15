@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 import math
 import traceback
+import graphics
 
 __author__ = 'Bartosz'
 
@@ -78,6 +79,11 @@ class Graham(object):
         self._result = []
 
     def solve(self):
+        win = graphics.GraphWin("go_otoczka", 800, 600)
+        for point in self._points:
+            point.draw(win)
+        win.getMouse()
+
         if len(self._points) < 3:
             return None
 
@@ -95,12 +101,31 @@ class Graham(object):
 
         # krok czwarty - szukanie rozwiązania
         i = 3
+        lines = []
+        line = graphics.Line(self._result[-3], self._result[-2])
+        lines.append(line)
+        line.draw(win)
+        line = graphics.Line(self._result[-2], self._result[-1])
+        lines.append(line)
+        line.draw(win)
+        win.getMouse()
         while i < len(result):
             if is_left(self._result[-2], self._result[-1], result[i]):
+                line = graphics.Line(self._result[-1], result[i])
+                lines.append(line)
+                line.draw(win)
+                win.getMouse()
                 self._result.append(result[i])
                 i += 1
             else:
                 self._result.pop()
+                if lines:
+                    line = lines.pop()
+                    line.undraw()
+        line = graphics.Line(self._result[-1], self._result[0])
+        line.draw(win)
+        print 'Finish!'
+        win.close()
 
     def get_result(self):
         return self._result
@@ -114,6 +139,10 @@ class Jarvis(object):
         self._result = []
 
     def solve(self):
+        win = graphics.GraphWin("go_otoczka", 800, 600)
+        for point in self._points:
+            point.draw(win)
+        win.getMouse()
         if len(self._points) < 3:
             return None
 
@@ -125,6 +154,9 @@ class Jarvis(object):
             best = reduce(f, self._points)
             # pierwszym elementem zawsze będzie nasz obecny punkt, bo mamy wtedy kąt 0 stopni
             self._result.append(best)
+            line = graphics.Line(tmp, best)
+            line.draw(win)
+            win.getMouse()
             tmp = self._result[-1]
 
         # lewa strona otoczki
@@ -133,6 +165,9 @@ class Jarvis(object):
         while tmp != self._p1:
             f = lambda x, y: reverse_comparator(tmp, x, y)
             best = reduce(f, self._points)
+            line = graphics.Line(tmp, best)
+            line.draw(win)
+            win.getMouse()
             result.append(best)
             tmp = result[-1]
 
@@ -140,6 +175,8 @@ class Jarvis(object):
         result = result[:-1]
 
         self._result.extend(result[::-1])
+        print 'Finish!'
+        win.close()
 
     def get_result(self):
         return self._result
